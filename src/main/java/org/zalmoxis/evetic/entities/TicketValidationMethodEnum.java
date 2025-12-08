@@ -1,6 +1,6 @@
 package org.zalmoxis.evetic.entities;
 
-public enum TicketValidationEnum
+public enum TicketValidationMethodEnum
 {
     QR_CODE,
     MANUAL_ENTRY
