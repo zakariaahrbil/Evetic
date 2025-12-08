@@ -24,6 +24,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -35,6 +36,7 @@ import java.util.UUID;
 @Builder
 public class Event
 {
+
     @Id
     @Column(name = "id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,5 +76,21 @@ public class Event
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Event event = (Event) o;
+        return Objects.equals(id, event.id) && Objects.equals(name, event.name) && Objects.equals(startTime, event.startTime) && Objects.equals(endTime, event.endTime) && Objects.equals(location, event.location) && Objects.equals(startSalesAt, event.startSalesAt) && Objects.equals(endSalesAt, event.endSalesAt) && status == event.status && Objects.equals(createdAt, event.createdAt) && Objects.equals(updatedAt, event.updatedAt);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(id, name, startTime, endTime, location, startSalesAt, endSalesAt, status, createdAt, updatedAt);
+    }
 
 }
