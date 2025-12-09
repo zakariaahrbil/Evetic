@@ -4,8 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +14,7 @@ import org.zalmoxis.evetic.dtos.EventCreationResDto;
 import org.zalmoxis.evetic.mappers.EventMapper;
 import org.zalmoxis.evetic.requests.EventCreationReq;
 import org.zalmoxis.evetic.services.EventService;
+import org.zalmoxis.evetic.services.UserService;
 
 import java.util.UUID;
 
@@ -25,20 +25,21 @@ public class EventController
 {
     private final EventService eventService;
     private final EventMapper eventMapper;
+    private final UserService userService;
 
     @PostMapping
     public ResponseEntity<EventCreationResDto> createEvent(
-           @Valid @RequestBody EventCreationReqDto eventCreationReqDto,
-            @AuthenticationPrincipal Jwt jwt
+            @Valid @RequestBody EventCreationReqDto eventCreationReqDto,
+            Authentication authentication
     )
     {
         EventCreationReq eventCreationReq = eventMapper.fromDto(eventCreationReqDto);
-        UUID uuid = UUID.fromString(jwt.getSubject());
+        String username = authentication.getName();
+        UUID userId = userService.getUserIdByUsername(username);
 
         EventCreationResDto eventCreationResDto = eventMapper.toDto(
-                eventService.createEvent(uuid, eventCreationReq)
+                eventService.createEvent(userId, eventCreationReq)
         );
-
 
         return new ResponseEntity<>(eventCreationResDto, HttpStatus.CREATED);
     }

@@ -12,21 +12,20 @@ services:
     ports:
         - "8181:8080"
     restart: always
-
-
-  keycloak:
-    image: quay.io/keycloak/keycloak:latest
-    environment:
-        KEYCLOAK_ADMIN: admin
-        KEYCLOAK_ADMIN_PASSWORD: adminPassword!
-    ports:
-        - "9090:8080"
-    command:
-        - start-dev
-        - --db=dev-file
-    restart: always
-    volumes:
-      - keycloak_data:/opt/keycloak/data
+#
+#  keycloak:
+#    image: quay.io/keycloak/keycloak:latest
+#    environment:
+#        KEYCLOAK_ADMIN: admin
+#        KEYCLOAK_ADMIN_PASSWORD: adminPassword!
+#    ports:
+#        - "9090:8080"
+#    command:
+#        - start-dev
+#        - --db=dev-file
+#    restart: always
+#    volumes:
+#      - keycloak_data:/opt/keycloak/data
 
 volumes:
   keycloak_data:
