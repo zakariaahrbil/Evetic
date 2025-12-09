@@ -45,6 +45,8 @@ public class Event
     private String name;
     @Column(name = "start_time")
     private LocalDateTime startTime;
+    @Column(name = "description")
+    private String description;
     @Column(name = "end_time")
     private LocalDateTime endTime;
     @Column(name = "location", nullable = false)
@@ -84,13 +86,12 @@ public class Event
             return false;
         }
         Event event = (Event) o;
-        return Objects.equals(id, event.id) && Objects.equals(name, event.name) && Objects.equals(startTime, event.startTime) && Objects.equals(endTime, event.endTime) && Objects.equals(location, event.location) && Objects.equals(startSalesAt, event.startSalesAt) && Objects.equals(endSalesAt, event.endSalesAt) && status == event.status && Objects.equals(createdAt, event.createdAt) && Objects.equals(updatedAt, event.updatedAt);
+        return Objects.equals(id, event.id) && Objects.equals(name, event.name) && Objects.equals(startTime, event.startTime) && Objects.equals(description, event.description) && Objects.equals(endTime, event.endTime) && Objects.equals(location, event.location) && Objects.equals(startSalesAt, event.startSalesAt) && Objects.equals(endSalesAt, event.endSalesAt) && status == event.status && Objects.equals(createdAt, event.createdAt) && Objects.equals(updatedAt, event.updatedAt);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(id, name, startTime, endTime, location, startSalesAt, endSalesAt, status, createdAt, updatedAt);
+        return Objects.hash(id, name, startTime, description, endTime, location, startSalesAt, endSalesAt, status, createdAt, updatedAt);
     }
-
 }

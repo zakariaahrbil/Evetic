@@ -37,6 +37,7 @@ public class EventServiceImpl
                 .endTime(eventCreationReq.getEndTime())
                 .startSalesAt(eventCreationReq.getStartSalesAt())
                 .endSalesAt(eventCreationReq.getEndSalesAt())
+                .description(eventCreationReq.getDescription())
                 .status(eventCreationReq.getStatus())
                 .organizer(organizer)
                 .build();

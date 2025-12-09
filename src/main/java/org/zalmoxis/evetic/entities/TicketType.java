@@ -46,7 +46,7 @@ public class TicketType
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", length = 200)
+    @Column(name = "description")
     private String description;
 
     @Column(name = "price")
