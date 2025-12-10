@@ -1,5 +1,6 @@
 package org.zalmoxis.evetic.services;
 
+import org.zalmoxis.evetic.dtos.LoginResDto;
 import org.zalmoxis.evetic.dtos.RegisterReqDto;
 import org.zalmoxis.evetic.dtos.RegisterResDto;
 
@@ -10,4 +11,5 @@ public interface UserService
     UUID getUserIdByUsername(String username);
 
     RegisterResDto register(RegisterReqDto registerReqDto);
+    LoginResDto login(String username);
 }
