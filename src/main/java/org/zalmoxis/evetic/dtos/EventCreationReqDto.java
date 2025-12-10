@@ -6,9 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.Getter;
 import org.zalmoxis.evetic.entities.EventStatusEnum;
-import org.zalmoxis.evetic.requests.TicketTypeCreationReq;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +18,7 @@ public class EventCreationReqDto
     private String name;
     @NotBlank(message = "Setting the location is mandatory")
     private String location;
-        @Size(max = 2500, message = "The description must not exceed 2500 characters")
+    @Size(max = 2500, message = "The description must not exceed 2500 characters")
     private String description;
     private LocalDateTime startTime;
     private LocalDateTime endTime;

@@ -4,16 +4,40 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.zalmoxis.evetic.dtos.ErrorResponse;
+import org.zalmoxis.evetic.exceptions.UserException;
 import org.zalmoxis.evetic.exceptions.UserNotFoundException;
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler
 {
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ErrorResponse> handleUserNameAlreadyExistsException(UserException ex)
+    {
+        log.error("Caught UserNameAlreadyExists exception: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse =
+                new ErrorResponse(ex.getMessage());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex)
+    {
+        log.error("Caught BadCredentialsException: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse =
+                new ErrorResponse("Invalid username or password");
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex)
     {
@@ -33,7 +57,7 @@ public class GlobalExceptionHandler
                 .getFieldErrors()
                 .stream()
                 .findFirst()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .map(error -> error.getDefaultMessage())
                                 .orElse("Method not valid error occurred.");
 
         ErrorResponse errorResponse =

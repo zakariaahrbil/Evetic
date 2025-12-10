@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zalmoxis.evetic.dtos.EventCreationReqDto;
 import org.zalmoxis.evetic.dtos.EventCreationResDto;
 import org.zalmoxis.evetic.mappers.EventMapper;
-import org.zalmoxis.evetic.requests.EventCreationReq;
 import org.zalmoxis.evetic.services.EventService;
 import org.zalmoxis.evetic.services.UserService;
 
@@ -33,12 +32,11 @@ public class EventController
             Authentication authentication
     )
     {
-        EventCreationReq eventCreationReq = eventMapper.fromDto(eventCreationReqDto);
         String username = authentication.getName();
         UUID userId = userService.getUserIdByUsername(username);
 
         EventCreationResDto eventCreationResDto = eventMapper.toDto(
-                eventService.createEvent(userId, eventCreationReq)
+                eventService.createEvent(userId, eventCreationReqDto)
         );
 
         return new ResponseEntity<>(eventCreationResDto, HttpStatus.CREATED);
