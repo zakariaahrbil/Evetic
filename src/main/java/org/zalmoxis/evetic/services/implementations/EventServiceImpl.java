@@ -1,6 +1,8 @@
 package org.zalmoxis.evetic.services.implementations;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zalmoxis.evetic.dtos.EventCreationReqDto;
 import org.zalmoxis.evetic.entities.Event;
@@ -57,5 +59,11 @@ public class EventServiceImpl
         event.setTicketTypes(ticketTypes);
 
         return eventRepo.save(event);
+    }
+
+    @Override
+    public Page<Event> getEventsForOrganizer(UUID organizerId, Pageable pageable)
+    {
+        return eventRepo.findByOrganizerId(organizerId, pageable);
     }
 }
