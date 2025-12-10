@@ -2,7 +2,7 @@
 
 > **Status**: First iteration in development 🚀
 
-Evetic is a comprehensive event ticketing platform built with Spring Boot that manages events, tickets, QR codes, and ticket validations with OAuth2 security through Keycloak.
+Evetic is a comprehensive event ticketing platform built with Spring Boot that manages events, tickets, QR codes, and ticket validations.
 
 ## 📋 Table of Contents
 
@@ -25,10 +25,10 @@ Evetic is a Spring Boot application designed to handle:
 - **Ticket System**: Issue and manage tickets for events
 - **QR Code Generation**: Generate QR codes for tickets
 - **Ticket Validation**: Validate tickets at event entry points
-- **User Authentication**: OAuth2 authentication via Keycloak
+- **User Authentication**: Secure authentication (custom or Spring Security-based)
 - **User Management**: Filter and manage users
 
-The application is containerized and uses Docker Compose for easy deployment with PostgreSQL, Keycloak, and Adminer.
+The application is containerized and uses Docker Compose for easy deployment with PostgreSQL and Adminer.
 
 ## 🛠️ Tech Stack
 
@@ -36,20 +36,19 @@ The application is containerized and uses Docker Compose for easy deployment wit
 - **Java 17**: Primary programming language
 - **Spring Boot 4.0.0**: Application framework
 - **Spring Data JPA**: ORM and database access
-- **Spring Security**: Authentication and authorization
-- **Spring OAuth2 Resource Server**: JWT token validation
+- **Spring Security**: Authentication and authorization (customizable)
 
 ### Database
 - **PostgreSQL**: Primary data persistence layer
 - **H2 Database**: Testing database
 
 ### Authentication & Authorization
-- **Keycloak**: Identity and Access Management (OAuth2 provider)
-- **JWT Tokens**: Bearer token authentication
+- **Spring Security**: Custom authentication 
 
 ### Additional Libraries
 - **Lombok 1.18.36**: Code generation (annotations for boilerplate)
 - **MapStruct 1.6.3**: Object mapping (DTOs to entities)
+- **Springdoc OpenAPI**: API documentation and Swagger UI
 
 ### Development & Deployment
 - **Maven**: Build automation
@@ -59,42 +58,60 @@ The application is containerized and uses Docker Compose for easy deployment wit
 ## 📁 Project Structure
 
 ```
-evetic/
-├── src/
-│   ├── main/
-│   │   ├── java/org/zalmoxis/evetic/
-│   │   │   ├── EveticApplication.java              # Application entry point
-│   │   │   ├── config/
-│   │   │   │   ├── JpaConfiguration.java           # JPA & Audit configuration
-│   │   │   │   └── SecurityConfig.java             # OAuth2 & Security setup
-│   │   │   ├── entities/
-│   │   │   │   ├── User.java                       # User entity
-│   │   │   │   ├── Event.java                      # Event entity
-│   │   │   │   ├── Ticket.java                     # Ticket entity
-│   │   │   │   ├── TicketType.java                 # Ticket type entity
-│   │   │   │   ├── QrCode.java                     # QR code entity
-│   │   │   │   ├── TicketValidation.java           # Ticket validation entity
-│   │   │   │   ├── EventStatusEnum.java            # Event status enumeration
-│   │   │   │   ├── TicketStatusEnum.java           # Ticket status enumeration
-│   │   │   │   ├── QrCodeStatusEnum.java           # QR code status enumeration
-│   │   │   │   ├── TicketValidationMethodEnum.java # Validation method enumeration
-│   │   │   │   └── TicketValidationStatusEnum.java # Validation status enumeration
-│   │   │   ├── filters/
-│   │   │   │   └── UserFilter.java                 # Custom security filter
-│   │   │   ├── repositories/
-│   │   │   │   └── UserRepo.java                   # User data access
-│   │   │   └── requests/                           # (Empty - DTOs to be added)
-│   │   └── resources/
-│   │       ├── application.properties              # Spring Boot configuration
-│   │       └── META-INF/orm.xml                    # JPA ORM mappings
-│   └── test/
-│       └── java/org/zalmoxis/evetic/
-│           └── EveticApplicationTests.java         # Application tests
-├── pom.xml                                          # Maven dependencies
-├── docker-compose.yml                              # Docker services
-├── mvnw & mvnw.cmd                                # Maven wrapper scripts
-└── README.md                                        # This file
+docker-compose.yml
+HELP.md
+mvnw
+mvnw.cmd
+pom.xml
+README.md
+src/
+  main/
+    java/
+      org/
+        zalmoxis/
+          evetic/
+            EveticApplication.java
+            config/
+            controllers/
+            dtos/
+            entities/
+            exceptions/
+            filters/
+            mappers/
+            repositories/
+            services/
+    resources/
+      application.properties
+      META-INF/
+        orm.xml
+      static/
+      templates/
+  test/
+    java/
+      org/
+        zalmoxis/
+          evetic/
+            EveticApplicationTests.java
 ```
+
+target/
+  classes/
+    application.properties
+    META-INF/
+      orm.xml
+    org/
+      zalmoxis/
+        evetic/
+          EveticApplication.class
+          config/
+          controllers/
+          dtos/
+          entities/
+          exceptions/
+          filters/
+          mappers/
+          repositories/
+          services/
 
 ## 🗄️ Entities & Data Model
 
@@ -167,7 +184,6 @@ docker-compose up -d
 
 This will start:
 - **PostgreSQL**: `jdbc:postgresql://localhost:5432/evetic`
-- **Keycloak**: `http://localhost:9090` (Admin console)
 - **Adminer**: `http://localhost:8181` (Database UI)
 
 ### 3. Build the Project
@@ -189,7 +205,7 @@ The application will start on `http://localhost:8080`
 
 ### 5. Verify Setup
 - Application should be running and connected to PostgreSQL
-- Check logs for successful Keycloak JWT provider initialization
+- Check logs for successful startup
 
 ## ⚙️ Configuration
 
@@ -210,29 +226,13 @@ spring.jpa.show-sql=true                      # Log SQL queries
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 spring.jpa.properties.hibernate.format_sql=true
 
-# OAuth2 / Keycloak
-spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:9090/realms/eventic-platform
 ```
 
 ### Security Configuration
-
-The application uses OAuth2 with Keycloak for authentication:
-- All endpoints require JWT authentication (Bearer token)
+- All endpoints require authentication (customizable via Spring Security)
 - CSRF protection is disabled (stateless API)
 - Session creation is disabled (STATELESS policy)
-- Custom UserFilter processes user information from JWT claims
-
-### Keycloak Setup
-
-1. Access Keycloak Admin Console: `http://localhost:9090/admin`
-   - Username: `admin`
-   - Password: `adminPassword!`
-
-2. Create/Configure Realm: `eventic-platform`
-
-3. Create Client application for Evetic
-
-4. Configure JWT issuer-uri in application properties
+- Custom filters can process user information from tokens or credentials
 
 ## 🐳 Docker Compose Setup
 
@@ -242,12 +242,6 @@ The `docker-compose.yml` includes:
 - **Port**: 5432
 - **Password**: `adminPassword!`
 - **Database**: Auto-created as `evetic`
-
-### Keycloak
-- **Port**: 8080 (internal) → 9090 (external)
-- **Admin Username**: `admin`
-- **Admin Password**: `adminPassword!`
-- **Database**: Dev file-based (h2)
 
 ### Adminer
 - **Port**: 8181
@@ -299,13 +293,12 @@ mvnw test
 
 ⚠️ **Development Only**:
 - Hardcoded credentials in `application.properties`
-- Keycloak running in `start-dev` mode
 - CSRF disabled for API simplicity
 
 **For Production**:
 - Use environment variables for sensitive data
 - Enable proper CSRF protection if needed
-- Configure proper JWT validation
+- Configure proper authentication and validation
 - Use secure password policies
 - Enable HTTPS/TLS
 
@@ -314,7 +307,7 @@ mvnw test
 ### Completed
 - ✅ Core entity model (User, Event, Ticket, QrCode, TicketValidation)
 - ✅ PostgreSQL integration
-- ✅ OAuth2/JWT security with Keycloak
+- ✅ Custom authentication with Spring Security
 - ✅ Docker Compose setup
 - ✅ JPA auditing and configuration
 
@@ -332,7 +325,6 @@ mvnw test
 
 ## 🐛 Known Issues & TODOs
 
-- Empty `requests/` package - DTOs need to be created
 - Controllers not yet implemented
 - Service layer not yet implemented
 - API documentation pending
@@ -341,19 +333,26 @@ mvnw test
 ## 📚 References
 
 - [Spring Boot Documentation](https://spring.io/projects/spring-boot)
-- [Spring Security OAuth2](https://spring.io/projects/spring-security-oauth2-resource-server)
-- [Keycloak Documentation](https://www.keycloak.org/documentation.html)
+- [Spring Security Documentation](https://spring.io/projects/spring-security)
 - [Lombok Documentation](https://projectlombok.org/)
 - [MapStruct Documentation](https://mapstruct.org/)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 
-## 📄 License
+## 🤝 Contribution Guidelines
 
-*(To be determined)*
+We welcome contributions! To contribute:
+1. Fork the repository and create your branch from `main`.
+2. Ensure your code follows the existing style and conventions.
+3. Write clear commit messages and document your changes.
+4. Add or update tests as needed.
+5. Open a pull request with a detailed description of your changes.
 
-## 👥 Contributors
+For major changes, please open an issue first to discuss what you would like to change.
 
-- Main Development Team
+## 📬 Contact & Support
+
+- For issues, please use the [GitHub Issues](https://github.com/your-repo/issues) page.
+- For questions or support, contact the maintainer at: your.email@example.com
 
 ---
 
@@ -365,4 +364,3 @@ mvnw test
 ---
 
 **Note**: This is the first iteration of the project. The codebase is actively under development and subject to significant changes.
-
