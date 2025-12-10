@@ -13,4 +13,6 @@ public interface EventService
     Event createEvent(UUID organizerId, EventCreationReqDto eventCreationReqDto);
 
     Page<Event> getEventsForOrganizer(UUID organizerId, Pageable pageable);
+    Page<Event> getAllEvents(Pageable pageable);
+    Event getEventByIdAndOrganizer(UUID eventId, UUID organizerId);
 }

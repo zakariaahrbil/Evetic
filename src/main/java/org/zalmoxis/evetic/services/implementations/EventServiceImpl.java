@@ -8,6 +8,7 @@ import org.zalmoxis.evetic.dtos.EventCreationReqDto;
 import org.zalmoxis.evetic.entities.Event;
 import org.zalmoxis.evetic.entities.TicketType;
 import org.zalmoxis.evetic.entities.User;
+import org.zalmoxis.evetic.exceptions.EventNotFoundException;
 import org.zalmoxis.evetic.exceptions.UserNotFoundException;
 import org.zalmoxis.evetic.repositories.EventRepo;
 import org.zalmoxis.evetic.repositories.UserRepo;
@@ -65,5 +66,18 @@ public class EventServiceImpl
     public Page<Event> getEventsForOrganizer(UUID organizerId, Pageable pageable)
     {
         return eventRepo.findByOrganizerId(organizerId, pageable);
+    }
+
+    @Override
+    public Page<Event> getAllEvents(Pageable pageable)
+    {
+        return  eventRepo.findAll(pageable);
+    }
+
+    @Override
+    public Event getEventByIdAndOrganizer(UUID eventId, UUID organizerId)
+    {
+        return eventRepo.findByIdAndOrganizerId(eventId, organizerId)
+                .orElseThrow(() -> new EventNotFoundException("Event with ID " + eventId + " not found"));
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.zalmoxis.evetic.dtos.ErrorResponse;
+import org.zalmoxis.evetic.exceptions.EventNotFoundException;
 import org.zalmoxis.evetic.exceptions.UserException;
 import org.zalmoxis.evetic.exceptions.UserNotFoundException;
 
@@ -16,6 +17,18 @@ import org.zalmoxis.evetic.exceptions.UserNotFoundException;
 @Slf4j
 public class GlobalExceptionHandler
 {
+
+    @ExceptionHandler(EventNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleEventNotFoundException(EventNotFoundException ex)
+    {
+        log.error("Caught EventNotFoundException: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse =
+                new ErrorResponse("Event with ID not found");
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+
     @ExceptionHandler(UserException.class)
     public ResponseEntity<ErrorResponse> handleUserNameAlreadyExistsException(UserException ex)
     {

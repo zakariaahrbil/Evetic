@@ -3,7 +3,9 @@ package org.zalmoxis.evetic.mappers;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.zalmoxis.evetic.dtos.EventCreationResDto;
+import org.zalmoxis.evetic.dtos.EventDetailsResDto;
 import org.zalmoxis.evetic.dtos.EventResDto;
+import org.zalmoxis.evetic.dtos.TicketTypeDetailsResDto;
 import org.zalmoxis.evetic.dtos.TicketTypeResDto;
 import org.zalmoxis.evetic.dtos.TicketTypeCreationResDto;
 import org.zalmoxis.evetic.entities.Event;
@@ -20,4 +22,8 @@ public interface EventMapper
     TicketTypeResDto toTicketTypeResDto(TicketType ticketType);
 
     EventResDto toEventResDto(Event event);
+
+    TicketTypeDetailsResDto toTicketTypeDetailsResDto(TicketType ticketType);
+
+    EventDetailsResDto toEventDetailsResDto(Event event);
 }
