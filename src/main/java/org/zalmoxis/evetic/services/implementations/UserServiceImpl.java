@@ -53,6 +53,8 @@ public class UserServiceImpl
     @Override
     public LoginResDto login(String username)
     {
+        //TODO: throw exception if user not found
+
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         String token = jwtUtil.generateToken(user.getUsername(), user.getRoles());

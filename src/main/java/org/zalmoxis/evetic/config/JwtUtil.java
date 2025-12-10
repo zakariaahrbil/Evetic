@@ -52,12 +52,15 @@ public class JwtUtil
     public List<String> extractRoles(String token)
     {
         SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-        return Jwts.parser()
+        var roles = Jwts.parser()
                 .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
                 .get("roles", List.class);
+
+        return roles != null ? roles : List.of();
+
     }
 
     public boolean validateToken(String token)
