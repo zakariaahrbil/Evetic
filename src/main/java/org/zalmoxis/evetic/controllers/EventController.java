@@ -61,15 +61,7 @@ public class EventController
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<Page<EventResDto>> getAllEvents(Pageable pageable){
 
-        Page<EventResDto> events = eventService.getAllEvents(
-                        pageable)
-                .map(eventMapper::toEventResDto);
-
-        return new ResponseEntity<>(events, HttpStatus.OK);
-    }
 
     @GetMapping("/{eventId}")
     public ResponseEntity<EventDetailsResDto> getEventDetailsByIdAndOrganizer(@PathVariable("eventId") UUID eventId, Authentication authentication){

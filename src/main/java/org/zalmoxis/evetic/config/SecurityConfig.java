@@ -46,7 +46,8 @@ public class SecurityConfig
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/**",
                                 "/swagger-ui/**",
-                                "/v3/**"
+                                "/v3/**",
+                                "/api/v1/published-events"
                                 ).permitAll()
                         .anyRequest().authenticated()
                 )

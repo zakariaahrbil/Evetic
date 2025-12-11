@@ -14,12 +14,17 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventResDto
+public class EventFullResDto
 {
     private UUID id;
     private String name;
     private String location;
     private String description;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private LocalDateTime startSalesAt;
+    private LocalDateTime endSalesAt;
     private EventStatusEnum status;
+    private List<TicketTypeResDto> ticketTypes = new ArrayList<>();
 
 }

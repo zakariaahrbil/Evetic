@@ -9,6 +9,7 @@ import org.zalmoxis.evetic.dtos.event.request.EventCreationReqDto;
 import org.zalmoxis.evetic.dtos.event.request.EventUpdatingReqDto;
 import org.zalmoxis.evetic.dtos.ticketType.request.TicketTypeUpdatingReqDto;
 import org.zalmoxis.evetic.entities.Event;
+import org.zalmoxis.evetic.entities.EventStatusEnum;
 import org.zalmoxis.evetic.entities.TicketType;
 import org.zalmoxis.evetic.entities.User;
 import org.zalmoxis.evetic.exceptions.EventNotFoundException;
@@ -79,9 +80,17 @@ public class EventServiceImpl
     }
 
     @Override
-    public Page<Event> getAllEvents(Pageable pageable)
+    public Page<Event> getPublishedEvents(Pageable pageable)
     {
-        return  eventRepo.findAll(pageable);
+        return  eventRepo.findByStatus(EventStatusEnum.PUBLISHED,pageable);
+    }
+
+    @Override
+    public Event getPublishedEventById(UUID eventId)
+    {
+        return eventRepo.findByIdAndStatus(eventId, EventStatusEnum.PUBLISHED).orElseThrow(
+                () -> new EventNotFoundException("Published event with ID " + eventId + " not found")
+        );
     }
 
     @Override

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.zalmoxis.evetic.entities.Event;
+import org.zalmoxis.evetic.entities.EventStatusEnum;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -15,4 +16,6 @@ public interface EventRepo
 {
     Page<Event> findByOrganizerId(UUID organizerId, Pageable pageable);
     Optional<Event> findByIdAndOrganizerId(UUID eventId, UUID organizerId);
+    Page<Event> findByStatus(EventStatusEnum eventStatus, Pageable pageable);
+    Optional<Event> findByIdAndStatus(UUID eventId, EventStatusEnum eventStatus);
 }

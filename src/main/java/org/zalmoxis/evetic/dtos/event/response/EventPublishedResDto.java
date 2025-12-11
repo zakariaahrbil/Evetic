@@ -3,23 +3,17 @@ package org.zalmoxis.evetic.dtos.event.response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.zalmoxis.evetic.dtos.ticketType.response.TicketTypeResDto;
-import org.zalmoxis.evetic.entities.EventStatusEnum;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventResDto
+public class EventPublishedResDto
 {
     private UUID id;
     private String name;
     private String location;
     private String description;
-    private EventStatusEnum status;
 
 }

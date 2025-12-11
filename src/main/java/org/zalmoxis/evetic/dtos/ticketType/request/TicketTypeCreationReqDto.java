@@ -11,7 +11,6 @@ import java.util.UUID;
 @Data
 public class TicketTypeCreationReqDto
 {
-    private UUID id;
     @NotBlank(message = "Setting the name is mandatory")
     private String name;
     @Size(max = 500, message = "The description must not exceed 500 characters")
