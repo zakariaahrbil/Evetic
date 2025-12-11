@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -104,6 +105,18 @@ public class EventController
 
     }
 
+
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<Void> deleteEvent(
+            @PathVariable("eventId") UUID eventId,
+            Authentication authentication
+    ){
+        eventService.deleteEventForOrganizer(
+                uuidFromAuthentication.getUUIDFromAuthentication(authentication),
+                eventId
+        );
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
 
 

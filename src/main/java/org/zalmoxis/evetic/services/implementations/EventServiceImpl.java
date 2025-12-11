@@ -151,5 +151,13 @@ public class EventServiceImpl
 
         return eventRepo.save(existingEvent);
     }
+
+    @Override
+    public void deleteEventForOrganizer(UUID organizerId, UUID eventId)
+    {
+        Event existingEvent = eventRepo.findByIdAndOrganizerId(eventId, organizerId)
+                .orElseThrow(() -> new EventNotFoundException("Event with ID " + eventId + " not found"));
+
+        eventRepo.delete(existingEvent);
+    }
 }
-    
