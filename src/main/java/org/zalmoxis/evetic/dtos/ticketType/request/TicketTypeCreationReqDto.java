@@ -1,4 +1,4 @@
-package org.zalmoxis.evetic.dtos;
+package org.zalmoxis.evetic.dtos.ticketType.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -6,9 +6,12 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class TicketTypeCreationReqDto
 {
+    private UUID id;
     @NotBlank(message = "Setting the name is mandatory")
     private String name;
     @Size(max = 500, message = "The description must not exceed 500 characters")

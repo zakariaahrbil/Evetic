@@ -1,4 +1,4 @@
-package org.zalmoxis.evetic.dtos;
+package org.zalmoxis.evetic.dtos.auth.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,11 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LoginResDto {
-    private String token;
+public class RegisterResDto {
+    private UUID id;
+    private String username;
+    private String email;
 }

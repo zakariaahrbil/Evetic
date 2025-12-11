@@ -1,4 +1,4 @@
-package org.zalmoxis.evetic.dtos;
+package org.zalmoxis.evetic.dtos.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package org.zalmoxis.evetic.dtos;
+package org.zalmoxis.evetic.dtos.auth.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

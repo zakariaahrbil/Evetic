@@ -69,7 +69,7 @@ public class Event
     @ManyToMany(mappedBy = "staffingEvents", fetch = FetchType.LAZY)
     private List<User> staff = new ArrayList<>();
 
-    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TicketType> ticketTypes = new ArrayList<>();
 
     @CreatedDate

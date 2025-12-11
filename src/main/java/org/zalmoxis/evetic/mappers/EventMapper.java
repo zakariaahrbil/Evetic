@@ -2,12 +2,12 @@ package org.zalmoxis.evetic.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
-import org.zalmoxis.evetic.dtos.EventCreationResDto;
-import org.zalmoxis.evetic.dtos.EventDetailsResDto;
-import org.zalmoxis.evetic.dtos.EventResDto;
-import org.zalmoxis.evetic.dtos.TicketTypeDetailsResDto;
-import org.zalmoxis.evetic.dtos.TicketTypeResDto;
-import org.zalmoxis.evetic.dtos.TicketTypeCreationResDto;
+import org.zalmoxis.evetic.dtos.event.response.EventCreationResDto;
+import org.zalmoxis.evetic.dtos.event.response.EventDetailsResDto;
+import org.zalmoxis.evetic.dtos.event.response.EventResDto;
+import org.zalmoxis.evetic.dtos.ticketType.response.TicketTypeDetailsResDto;
+import org.zalmoxis.evetic.dtos.ticketType.response.TicketTypeResDto;
+import org.zalmoxis.evetic.dtos.ticketType.response.TicketTypeCreationResDto;
 import org.zalmoxis.evetic.entities.Event;
 import org.zalmoxis.evetic.entities.TicketType;
 

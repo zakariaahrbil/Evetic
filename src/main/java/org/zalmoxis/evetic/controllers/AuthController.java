@@ -11,13 +11,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.zalmoxis.evetic.dtos.LoginReqDto;
-import org.zalmoxis.evetic.dtos.LoginResDto;
-import org.zalmoxis.evetic.dtos.RegisterReqDto;
-import org.zalmoxis.evetic.dtos.RegisterResDto;
+import org.zalmoxis.evetic.dtos.auth.request.LoginReqDto;
+import org.zalmoxis.evetic.dtos.auth.response.LoginResDto;
+import org.zalmoxis.evetic.dtos.auth.request.RegisterReqDto;
+import org.zalmoxis.evetic.dtos.auth.response.RegisterResDto;
 
 import org.zalmoxis.evetic.services.UserService;
 

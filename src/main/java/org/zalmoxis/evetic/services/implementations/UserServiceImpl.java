@@ -4,14 +4,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.zalmoxis.evetic.config.JwtUtil;
-import org.zalmoxis.evetic.dtos.LoginResDto;
-import org.zalmoxis.evetic.dtos.RegisterReqDto;
-import org.zalmoxis.evetic.dtos.RegisterResDto;
+import org.zalmoxis.evetic.dtos.auth.response.LoginResDto;
+import org.zalmoxis.evetic.dtos.auth.request.RegisterReqDto;
+import org.zalmoxis.evetic.dtos.auth.response.RegisterResDto;
+import org.zalmoxis.evetic.dtos.event.response.EventResDto;
+import org.zalmoxis.evetic.entities.Event;
 import org.zalmoxis.evetic.entities.User;
 import org.zalmoxis.evetic.entities.UserRole;
+import org.zalmoxis.evetic.exceptions.EventNotFoundException;
 import org.zalmoxis.evetic.exceptions.UserException;
 import org.zalmoxis.evetic.exceptions.UserNotFoundException;
 import org.zalmoxis.evetic.mappers.AuthMapper;
+import org.zalmoxis.evetic.repositories.EventRepo;
 import org.zalmoxis.evetic.repositories.UserRepo;
 import org.zalmoxis.evetic.services.UserService;
 
@@ -28,6 +32,7 @@ public class UserServiceImpl
     private final PasswordEncoder passwordEncoder;
     private final AuthMapper authMapper;
     private final JwtUtil jwtUtil;
+    private final EventRepo eventRepo;
 
     @Override
     public UUID getUserIdByUsername(String username)
@@ -69,4 +74,6 @@ public class UserServiceImpl
 
         return new LoginResDto(token);
     }
+
+
 }

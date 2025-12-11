@@ -1,7 +1,6 @@
 package org.zalmoxis.evetic.controllers;
 
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,18 +10,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.zalmoxis.evetic.dtos.EventCreationReqDto;
-import org.zalmoxis.evetic.dtos.EventCreationResDto;
-import org.zalmoxis.evetic.dtos.EventDetailsResDto;
-import org.zalmoxis.evetic.dtos.EventResDto;
+import org.zalmoxis.evetic.dtos.event.request.EventCreationReqDto;
+import org.zalmoxis.evetic.dtos.event.request.EventUpdatingReqDto;
+import org.zalmoxis.evetic.dtos.event.response.EventCreationResDto;
+import org.zalmoxis.evetic.dtos.event.response.EventDetailsResDto;
+import org.zalmoxis.evetic.dtos.event.response.EventResDto;
 import org.zalmoxis.evetic.mappers.EventMapper;
 import org.zalmoxis.evetic.services.EventService;
 import org.zalmoxis.evetic.utils.UUIDFromAuthentication;
 
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/events")
@@ -70,11 +71,11 @@ public class EventController
     }
 
     @GetMapping("/{eventId}")
-    public ResponseEntity<EventDetailsResDto> getEventDetailsByIdAndOrganizer(@PathVariable("eventId") String eventId, Authentication authentication){
+    public ResponseEntity<EventDetailsResDto> getEventDetailsByIdAndOrganizer(@PathVariable("eventId") UUID eventId, Authentication authentication){
 
         EventDetailsResDto eventDetailsResDto = eventMapper.toEventDetailsResDto(
                 eventService.getEventByIdAndOrganizer(
-                        java.util.UUID.fromString(eventId),
+                        eventId,
                         uuidFromAuthentication.getUUIDFromAuthentication(authentication)
                 )
         );
@@ -82,6 +83,28 @@ public class EventController
         return new ResponseEntity<>(eventDetailsResDto, HttpStatus.OK);
 
     }
+
+
+    @PutMapping("/{eventId}")
+    public ResponseEntity<EventDetailsResDto> updateEvent(
+            @PathVariable("eventId") UUID eventId,
+            @Valid @RequestBody EventUpdatingReqDto eventUpdatingReqDto,
+            Authentication authentication
+    ){
+
+        EventDetailsResDto updatedEvent = eventMapper.toEventDetailsResDto(
+                eventService.updateEventForOrganizer(
+                        uuidFromAuthentication.getUUIDFromAuthentication(authentication),
+                        eventUpdatingReqDto,
+                        eventId
+                )
+        );
+
+        return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
+
+    }
+
+
 
 
 }

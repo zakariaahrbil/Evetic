@@ -8,9 +8,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.zalmoxis.evetic.dtos.ErrorResponse;
+import org.zalmoxis.evetic.dtos.common.ErrorResponse;
 import org.zalmoxis.evetic.exceptions.EventNotFoundException;
+import org.zalmoxis.evetic.exceptions.EventUpdatingException;
+import org.zalmoxis.evetic.exceptions.TicketTypeNotFoundException;
 import org.zalmoxis.evetic.exceptions.UserException;
+import org.zalmoxis.evetic.exceptions.UserNotAuthorized;
 import org.zalmoxis.evetic.exceptions.UserNotFoundException;
 
 @RestControllerAdvice
@@ -18,14 +21,46 @@ import org.zalmoxis.evetic.exceptions.UserNotFoundException;
 public class GlobalExceptionHandler
 {
 
+    @ExceptionHandler(EventUpdatingException.class)
+    public ResponseEntity<ErrorResponse> handleEventUpdatingException(EventUpdatingException ex)
+    {
+        log.error("Caught EventUpdatingException: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse =
+                new ErrorResponse("Cannot update event ID");
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserNotAuthorized.class)
+    public ResponseEntity<ErrorResponse> handleUserNotAuthorizedException(UserNotAuthorized ex)
+    {
+        log.error("Caught UserNotAuthorized exception: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse =
+                new ErrorResponse("User not authorized to perform this action");
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+
+    @ExceptionHandler(TicketTypeNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTicketTypeNotFoundException(TicketTypeNotFoundException ex)
+    {
+        log.error("Caught TicketTypeNotFoundException: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse =
+                new ErrorResponse("Ticket type not found");
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
     @ExceptionHandler(EventNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleEventNotFoundException(EventNotFoundException ex)
     {
         log.error("Caught EventNotFoundException: {}", ex.getMessage(), ex);
         ErrorResponse errorResponse =
-                new ErrorResponse("Event with ID not found");
+                new ErrorResponse("Event not found");
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
 
