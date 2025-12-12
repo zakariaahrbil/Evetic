@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.zalmoxis.evetic.dtos.common.ErrorResponse;
 import org.zalmoxis.evetic.exceptions.EventNotFoundException;
 import org.zalmoxis.evetic.exceptions.EventUpdatingException;
+import org.zalmoxis.evetic.exceptions.QrCodeGenerationException;
 import org.zalmoxis.evetic.exceptions.TicketTypeNotFoundException;
 import org.zalmoxis.evetic.exceptions.UserException;
 import org.zalmoxis.evetic.exceptions.UserNotAuthorized;
@@ -21,6 +22,16 @@ import org.zalmoxis.evetic.exceptions.UserNotFoundException;
 @Slf4j
 public class GlobalExceptionHandler
 {
+
+    @ExceptionHandler(QrCodeGenerationException.class)
+    public ResponseEntity<ErrorResponse> handleQrCodeGenerationException(QrCodeGenerationException ex)
+    {
+        log.error("Caught QrCodeGenerationException: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse =
+                new ErrorResponse("Failed to generate QR code");
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     @ExceptionHandler(EventUpdatingException.class)
     public ResponseEntity<ErrorResponse> handleEventUpdatingException(EventUpdatingException ex)
