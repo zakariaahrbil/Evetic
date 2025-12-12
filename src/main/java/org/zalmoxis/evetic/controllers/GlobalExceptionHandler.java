@@ -16,6 +16,7 @@ import org.zalmoxis.evetic.exceptions.UserException;
 import org.zalmoxis.evetic.exceptions.UserNotAuthorized;
 import org.zalmoxis.evetic.exceptions.UserNotFoundException;
 
+
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler
@@ -41,7 +42,6 @@ public class GlobalExceptionHandler
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
-
     @ExceptionHandler(TicketTypeNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleTicketTypeNotFoundException(TicketTypeNotFoundException ex)
     {
@@ -52,7 +52,6 @@ public class GlobalExceptionHandler
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-
     @ExceptionHandler(EventNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleEventNotFoundException(EventNotFoundException ex)
     {
@@ -62,7 +61,6 @@ public class GlobalExceptionHandler
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
-
 
     @ExceptionHandler(UserException.class)
     public ResponseEntity<ErrorResponse> handleUserNameAlreadyExistsException(UserException ex)
@@ -84,8 +82,6 @@ public class GlobalExceptionHandler
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
-
-
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex)
     {
@@ -95,7 +91,6 @@ public class GlobalExceptionHandler
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
-
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidExceptions(MethodArgumentNotValidException ex)
@@ -113,7 +108,6 @@ public class GlobalExceptionHandler
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
-
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(ConstraintViolationException ex)
@@ -138,7 +132,5 @@ public class GlobalExceptionHandler
         ErrorResponse errorResponse = new ErrorResponse("An unexpected error occurred.");
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-
 
 }

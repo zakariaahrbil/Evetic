@@ -7,11 +7,8 @@ import org.zalmoxis.evetic.config.JwtUtil;
 import org.zalmoxis.evetic.dtos.auth.response.LoginResDto;
 import org.zalmoxis.evetic.dtos.auth.request.RegisterReqDto;
 import org.zalmoxis.evetic.dtos.auth.response.RegisterResDto;
-import org.zalmoxis.evetic.dtos.event.response.EventResDto;
-import org.zalmoxis.evetic.entities.Event;
 import org.zalmoxis.evetic.entities.User;
 import org.zalmoxis.evetic.entities.UserRole;
-import org.zalmoxis.evetic.exceptions.EventNotFoundException;
 import org.zalmoxis.evetic.exceptions.UserException;
 import org.zalmoxis.evetic.exceptions.UserNotFoundException;
 import org.zalmoxis.evetic.mappers.AuthMapper;
@@ -67,7 +64,6 @@ public class UserServiceImpl
     @Override
     public LoginResDto login(String username)
     {
-
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         String token = jwtUtil.generateToken(user.getUsername(), user.getRoles());

@@ -94,6 +94,15 @@ public class EventServiceImpl
     }
 
     @Override
+    public Page<Event> searchPublishedEvents(String query, Pageable pageable)
+    {
+        if(query == null || query.trim().isEmpty()){
+            return getPublishedEvents(pageable);
+        }
+        return eventRepo.searchPublishedEvents(query, pageable);
+    }
+
+    @Override
     public Event getEventByIdAndOrganizer(UUID eventId, UUID organizerId)
     {
         return eventRepo.findByIdAndOrganizerId(eventId, organizerId)

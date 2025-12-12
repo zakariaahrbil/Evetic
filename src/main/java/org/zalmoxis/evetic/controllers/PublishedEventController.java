@@ -45,5 +45,18 @@ public class PublishedEventController
         return new ResponseEntity<>(eventFullResDto, HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Page<EventPublishedResDto>> searchPublishedEvents(
+            @RequestParam(required = false) String q,
+            Pageable pageable)
+    {
+        Page<EventPublishedResDto> events = eventService.searchPublishedEvents(
+                        q,
+                        pageable)
+                .map(eventMapper::toEventPublishedResDto);
+
+        return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
 
 }
