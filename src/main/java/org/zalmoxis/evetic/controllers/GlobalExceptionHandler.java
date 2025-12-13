@@ -12,16 +12,36 @@ import org.zalmoxis.evetic.dtos.common.ErrorResponse;
 import org.zalmoxis.evetic.exceptions.EventNotFoundException;
 import org.zalmoxis.evetic.exceptions.EventUpdatingException;
 import org.zalmoxis.evetic.exceptions.QrCodeGenerationException;
+import org.zalmoxis.evetic.exceptions.QrCodeNotFoundException;
+import org.zalmoxis.evetic.exceptions.TicketsSoldOutException;
 import org.zalmoxis.evetic.exceptions.TicketTypeNotFoundException;
 import org.zalmoxis.evetic.exceptions.UserException;
 import org.zalmoxis.evetic.exceptions.UserNotAuthorized;
 import org.zalmoxis.evetic.exceptions.UserNotFoundException;
 
-
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler
 {
+    @ExceptionHandler(TicketsSoldOutException.class)
+    public ResponseEntity<ErrorResponse> handleTicketSoldOutException(TicketsSoldOutException ex)
+    {
+        log.error("Caught TicketsSoldOutException: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse =
+                new ErrorResponse("Ticket type is sold out");
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(QrCodeNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleQrCodeNotFoundException(QrCodeNotFoundException ex)
+    {
+        log.error("Caught QrCodeNotFoundException: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse =
+                new ErrorResponse("QR code not found");
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(QrCodeGenerationException.class)
     public ResponseEntity<ErrorResponse> handleQrCodeGenerationException(QrCodeGenerationException ex)
@@ -112,7 +132,7 @@ public class GlobalExceptionHandler
                 .stream()
                 .findFirst()
                 .map(error -> error.getDefaultMessage())
-                                .orElse("Method not valid error occurred.");
+                .orElse("Method not valid error occurred.");
 
         ErrorResponse errorResponse =
                 new ErrorResponse(errorMessage);
@@ -143,5 +163,4 @@ public class GlobalExceptionHandler
         ErrorResponse errorResponse = new ErrorResponse("An unexpected error occurred.");
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
 }

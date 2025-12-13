@@ -30,4 +30,5 @@ public interface EventRepo
             nativeQuery = true
     )
     Page<Event> searchPublishedEvents(@Param("element") String query, Pageable pageable);
+    boolean existsByIdAndStatus(UUID eventId, EventStatusEnum status);
 }
