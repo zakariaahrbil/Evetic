@@ -12,6 +12,7 @@ import org.zalmoxis.evetic.entities.QrCode;
 import org.zalmoxis.evetic.entities.QrCodeStatusEnum;
 import org.zalmoxis.evetic.entities.Ticket;
 import org.zalmoxis.evetic.exceptions.QrCodeGenerationException;
+import org.zalmoxis.evetic.exceptions.QrCodeNotFoundException;
 import org.zalmoxis.evetic.repositories.QrCodeRepo;
 import org.zalmoxis.evetic.services.QrCodeService;
 
@@ -54,6 +55,19 @@ public class QrCodeServiceImpl
 
         }catch (WriterException | IOException e ){
             throw new QrCodeGenerationException("Failed to generate QR code", e);
+        }
+    }
+
+    @Override
+    public byte[] getQrCodeImageForOwner(UUID ticketId, UUID ownerId)
+    {
+        QrCode qrCode = qrCodeRepo.findByTicketIdAndTicketOwnerId(ticketId,ownerId)
+                .orElseThrow(() -> new QrCodeNotFoundException("Ticket id " + ticketId + " not found"));
+
+        try{
+           return Base64.getDecoder().decode(qrCode.getCode());
+        }catch (IllegalArgumentException e){
+            throw new QrCodeGenerationException("Failed to decode QR code image for ticket ID " + ticketId, e);
         }
     }
 

@@ -10,4 +10,5 @@ import java.util.UUID;
 public interface TicketService
 {
     Page<Ticket> listAllTicketsForUser(UUID ownerId, Pageable pageable);
+    Ticket getTicketForOwner(UUID ticketId, UUID ownerId);
 }

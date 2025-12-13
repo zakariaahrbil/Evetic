@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.zalmoxis.evetic.dtos.event.response.EventFullResDto;
 import org.zalmoxis.evetic.dtos.event.response.EventPublishedResDto;
-import org.zalmoxis.evetic.dtos.event.response.EventResDto;
 import org.zalmoxis.evetic.mappers.EventMapper;
 import org.zalmoxis.evetic.services.EventService;
 

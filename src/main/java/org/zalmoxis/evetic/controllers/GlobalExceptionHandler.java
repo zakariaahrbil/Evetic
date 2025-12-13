@@ -13,6 +13,7 @@ import org.zalmoxis.evetic.exceptions.EventNotFoundException;
 import org.zalmoxis.evetic.exceptions.EventUpdatingException;
 import org.zalmoxis.evetic.exceptions.QrCodeGenerationException;
 import org.zalmoxis.evetic.exceptions.QrCodeNotFoundException;
+import org.zalmoxis.evetic.exceptions.TicketNotFoundException;
 import org.zalmoxis.evetic.exceptions.TicketsSoldOutException;
 import org.zalmoxis.evetic.exceptions.TicketTypeNotFoundException;
 import org.zalmoxis.evetic.exceptions.UserException;
@@ -23,6 +24,18 @@ import org.zalmoxis.evetic.exceptions.UserNotFoundException;
 @Slf4j
 public class GlobalExceptionHandler
 {
+
+    @ExceptionHandler(TicketNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTicketNotFoundException(TicketNotFoundException ex)
+    {
+        log.error("Caught TicketNotFoundException: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse =
+                new ErrorResponse("Ticket not found");
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
     @ExceptionHandler(TicketsSoldOutException.class)
     public ResponseEntity<ErrorResponse> handleTicketSoldOutException(TicketsSoldOutException ex)
     {
