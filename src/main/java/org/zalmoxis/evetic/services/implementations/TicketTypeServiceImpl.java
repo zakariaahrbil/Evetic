@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.zalmoxis.evetic.entities.EventStatusEnum;
-import org.zalmoxis.evetic.entities.QrCode;
 import org.zalmoxis.evetic.entities.Ticket;
 import org.zalmoxis.evetic.entities.TicketStatusEnum;
 import org.zalmoxis.evetic.entities.TicketType;

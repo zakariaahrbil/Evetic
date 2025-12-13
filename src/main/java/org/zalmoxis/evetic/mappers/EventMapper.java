@@ -7,10 +7,10 @@ import org.zalmoxis.evetic.dtos.event.response.EventDetailsResDto;
 import org.zalmoxis.evetic.dtos.event.response.EventFullResDto;
 import org.zalmoxis.evetic.dtos.event.response.EventPublishedResDto;
 import org.zalmoxis.evetic.dtos.event.response.EventResDto;
-import org.zalmoxis.evetic.dtos.ticketType.response.TicketTypeDetailsResDto;
-import org.zalmoxis.evetic.dtos.ticketType.response.TicketTypeFullResDto;
-import org.zalmoxis.evetic.dtos.ticketType.response.TicketTypeResDto;
-import org.zalmoxis.evetic.dtos.ticketType.response.TicketTypeCreationResDto;
+import org.zalmoxis.evetic.dtos.tickettype.response.TicketTypeDetailsResDto;
+import org.zalmoxis.evetic.dtos.tickettype.response.TicketTypeFullResDto;
+import org.zalmoxis.evetic.dtos.tickettype.response.TicketTypeResDto;
+import org.zalmoxis.evetic.dtos.tickettype.response.TicketTypeCreationResDto;
 import org.zalmoxis.evetic.entities.Event;
 import org.zalmoxis.evetic.entities.TicketType;
 
@@ -21,8 +21,6 @@ public interface EventMapper
     EventCreationResDto toDto(Event event);
 
     TicketTypeCreationResDto toDto(TicketType ticketType);
-
-    TicketTypeResDto toTicketTypeResDto(TicketType ticketType);
 
     EventResDto toEventResDto(Event event);
 

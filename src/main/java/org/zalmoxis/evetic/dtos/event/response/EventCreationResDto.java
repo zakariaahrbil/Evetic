@@ -3,7 +3,7 @@ package org.zalmoxis.evetic.dtos.event.response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.zalmoxis.evetic.dtos.ticketType.response.TicketTypeCreationResDto;
+import org.zalmoxis.evetic.dtos.tickettype.response.TicketTypeCreationResDto;
 import org.zalmoxis.evetic.entities.EventStatusEnum;
 
 import java.time.LocalDateTime;

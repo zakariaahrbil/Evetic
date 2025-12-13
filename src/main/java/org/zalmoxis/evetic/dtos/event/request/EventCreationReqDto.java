@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.zalmoxis.evetic.dtos.ticketType.request.TicketTypeCreationReqDto;
+import org.zalmoxis.evetic.dtos.tickettype.request.TicketTypeCreationReqDto;
 import org.zalmoxis.evetic.entities.EventStatusEnum;
 
 import java.time.LocalDateTime;

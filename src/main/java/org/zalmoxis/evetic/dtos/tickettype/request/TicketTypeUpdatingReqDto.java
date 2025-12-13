@@ -1,4 +1,4 @@
-package org.zalmoxis.evetic.dtos.ticketType.request;
+package org.zalmoxis.evetic.dtos.tickettype.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

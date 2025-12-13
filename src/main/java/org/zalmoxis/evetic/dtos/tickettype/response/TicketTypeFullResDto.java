@@ -1,4 +1,4 @@
-package org.zalmoxis.evetic.dtos.ticketType.response;
+package org.zalmoxis.evetic.dtos.tickettype.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

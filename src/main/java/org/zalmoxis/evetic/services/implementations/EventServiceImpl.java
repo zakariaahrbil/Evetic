@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zalmoxis.evetic.dtos.event.request.EventCreationReqDto;
 import org.zalmoxis.evetic.dtos.event.request.EventUpdatingReqDto;
-import org.zalmoxis.evetic.dtos.ticketType.request.TicketTypeUpdatingReqDto;
+import org.zalmoxis.evetic.dtos.tickettype.request.TicketTypeUpdatingReqDto;
 import org.zalmoxis.evetic.entities.Event;
 import org.zalmoxis.evetic.entities.EventStatusEnum;
 import org.zalmoxis.evetic.entities.TicketType;
@@ -20,7 +20,6 @@ import org.zalmoxis.evetic.repositories.EventRepo;
 import org.zalmoxis.evetic.repositories.UserRepo;
 import org.zalmoxis.evetic.services.EventService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -37,12 +36,14 @@ public class EventServiceImpl
 
     private final UserRepo userRepo;
     private final EventRepo eventRepo;
+    private static final String EVENT_NOT_FOUND_PREFIX = "Event with ID ";
+    private static final String EVENT_NOT_FOUND_SUFFIX = " not found";
 
     @Override
     public Event createEvent(UUID organizerId, EventCreationReqDto eventCreationReqDto)
     {
         User organizer = userRepo.findById(organizerId)
-                .orElseThrow(() -> new UserNotFoundException("Organizer with ID " + organizerId + " not found"));
+                .orElseThrow(() -> new UserNotFoundException("Organizer with ID " + organizerId + EVENT_NOT_FOUND_SUFFIX));
 
         Event event = Event.builder()
                 .name(eventCreationReqDto.getName())
@@ -56,7 +57,7 @@ public class EventServiceImpl
                 .organizer(organizer)
                 .build();
 
-        List<TicketType> ticketTypes = new ArrayList<>();
+        List<TicketType> ticketTypes;
         ticketTypes = eventCreationReqDto.getTicketTypes().stream()
                 .map(ticketType ->
                         TicketType.builder()
@@ -89,7 +90,7 @@ public class EventServiceImpl
     public Event getPublishedEventById(UUID eventId)
     {
         return eventRepo.findByIdAndStatus(eventId, EventStatusEnum.PUBLISHED).orElseThrow(
-                () -> new EventNotFoundException("Published event with ID " + eventId + " not found")
+                () -> new EventNotFoundException("Published event with ID " + eventId + EVENT_NOT_FOUND_SUFFIX)
         );
     }
 
@@ -106,7 +107,7 @@ public class EventServiceImpl
     public Event getEventByIdAndOrganizer(UUID eventId, UUID organizerId)
     {
         return eventRepo.findByIdAndOrganizerId(eventId, organizerId)
-                .orElseThrow(() -> new EventNotFoundException("Event with ID " + eventId + " not found"));
+                .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_FOUND_PREFIX + eventId + EVENT_NOT_FOUND_SUFFIX));
     }
 
     @Override
@@ -119,7 +120,7 @@ public class EventServiceImpl
 
 
         Event existingEvent = eventRepo.findByIdAndOrganizerId(event.getId(), organizerId)
-                .orElseThrow(() -> new EventNotFoundException("Event with ID " + event.getId() + " not found"));
+                .orElseThrow(() -> new EventNotFoundException( EVENT_NOT_FOUND_PREFIX+ event.getId() + EVENT_NOT_FOUND_SUFFIX));
 
 
         existingEvent.setName(event.getName());
@@ -133,7 +134,7 @@ public class EventServiceImpl
 
         Set<UUID> reqTicketTypesIds = event.getTicketTypes()
                 .stream()
-                .map(ticketTypeUpdatingReqDto ->  ticketTypeUpdatingReqDto.getId())
+                .map(TicketTypeUpdatingReqDto::getId)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
@@ -162,7 +163,7 @@ public class EventServiceImpl
                     existingTicketType.setDescription(ticketTypeUpdatingReqDto.getDescription());
                     existingTicketType.setTotalAvailable(ticketTypeUpdatingReqDto.getTotalAvailable());
                 } else {
-                    throw new TicketTypeNotFoundException("Ticket Type with ID " + ticketTypeUpdatingReqDto.getId() + " not found");
+                    throw new TicketTypeNotFoundException("Ticket Type with ID " + ticketTypeUpdatingReqDto.getId() + EVENT_NOT_FOUND_SUFFIX);
                 }
             }
         }
@@ -174,7 +175,7 @@ public class EventServiceImpl
     public void deleteEventForOrganizer(UUID organizerId, UUID eventId)
     {
         Event existingEvent = eventRepo.findByIdAndOrganizerId(eventId, organizerId)
-                .orElseThrow(() -> new EventNotFoundException("Event with ID " + eventId + " not found"));
+                .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_FOUND_PREFIX + eventId + EVENT_NOT_FOUND_SUFFIX));
 
         eventRepo.delete(existingEvent);
     }

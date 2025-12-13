@@ -1,4 +1,4 @@
-package org.zalmoxis.evetic.dtos.ticketValidation.response;
+package org.zalmoxis.evetic.dtos.ticketvalidation.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

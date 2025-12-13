@@ -3,7 +3,7 @@ package org.zalmoxis.evetic.mappers;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.zalmoxis.evetic.dtos.ticketValidation.response.TicketValidationResDto;
+import org.zalmoxis.evetic.dtos.ticketvalidation.response.TicketValidationResDto;
 import org.zalmoxis.evetic.entities.TicketValidation;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
