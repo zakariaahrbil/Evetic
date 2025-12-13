@@ -1,17 +1,19 @@
 package org.zalmoxis.evetic.dtos.ticket.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.zalmoxis.evetic.dtos.ticketType.response.TicketTypeTicketResDto;
 import org.zalmoxis.evetic.entities.TicketStatusEnum;
-import org.zalmoxis.evetic.entities.TicketType;
-import org.zalmoxis.evetic.entities.User;
 
 import java.util.UUID;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class TicketResDto
 {
     private UUID id;
     private TicketStatusEnum status;
-    private User owner;
-    private TicketType ticketType;
-
-
+    private TicketTypeTicketResDto ticketType;
 }
