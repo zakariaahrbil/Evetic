@@ -53,7 +53,7 @@ public class Ticket
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<QrCode> codes = new ArrayList<>();
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

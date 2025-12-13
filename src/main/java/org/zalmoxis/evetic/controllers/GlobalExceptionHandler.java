@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -12,6 +13,7 @@ import org.zalmoxis.evetic.dtos.common.ErrorResponse;
 import org.zalmoxis.evetic.exceptions.EventNotFoundException;
 import org.zalmoxis.evetic.exceptions.EventUpdatingException;
 import org.zalmoxis.evetic.exceptions.QrCodeGenerationException;
+import org.zalmoxis.evetic.exceptions.QrCodeInvalidException;
 import org.zalmoxis.evetic.exceptions.QrCodeNotFoundException;
 import org.zalmoxis.evetic.exceptions.TicketNotFoundException;
 import org.zalmoxis.evetic.exceptions.TicketsSoldOutException;
@@ -24,6 +26,29 @@ import org.zalmoxis.evetic.exceptions.UserNotFoundException;
 @Slf4j
 public class GlobalExceptionHandler
 {
+
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAuthorizationDeniedException(AuthorizationDeniedException ex)
+    {
+        log.error("Caught AuthorizationDeniedException: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse =
+                new ErrorResponse("Access denied");
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+
+    @ExceptionHandler(QrCodeInvalidException.class)
+    public ResponseEntity<ErrorResponse> handleQrCodeInvalidException(QrCodeInvalidException ex)
+    {
+        log.error("Caught QrCodeInvalidException: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse =
+                new ErrorResponse("Qr code is invalid");
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 
     @ExceptionHandler(TicketNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleTicketNotFoundException(TicketNotFoundException ex)
