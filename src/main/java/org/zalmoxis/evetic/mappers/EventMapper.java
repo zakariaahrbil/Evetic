@@ -9,7 +9,6 @@ import org.zalmoxis.evetic.dtos.event.response.EventPublishedResDto;
 import org.zalmoxis.evetic.dtos.event.response.EventResDto;
 import org.zalmoxis.evetic.dtos.tickettype.response.TicketTypeDetailsResDto;
 import org.zalmoxis.evetic.dtos.tickettype.response.TicketTypeFullResDto;
-import org.zalmoxis.evetic.dtos.tickettype.response.TicketTypeResDto;
 import org.zalmoxis.evetic.dtos.tickettype.response.TicketTypeCreationResDto;
 import org.zalmoxis.evetic.entities.Event;
 import org.zalmoxis.evetic.entities.TicketType;
