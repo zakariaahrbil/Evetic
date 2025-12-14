@@ -20,6 +20,7 @@ import org.zalmoxis.evetic.entities.TicketType;
 import org.zalmoxis.evetic.entities.User;
 import org.zalmoxis.evetic.exceptions.EventNotFoundException;
 import org.zalmoxis.evetic.exceptions.EventUpdatingException;
+import org.zalmoxis.evetic.exceptions.TicketTypeNotFoundException;
 import org.zalmoxis.evetic.exceptions.UserNotFoundException;
 import org.zalmoxis.evetic.repositories.EventRepo;
 import org.zalmoxis.evetic.repositories.UserRepo;
@@ -282,6 +283,108 @@ class EventServiceImplTest {
         assertEquals("Updated Event", result.getName());
         assertEquals("Updated Location", result.getLocation());
         verify(eventRepo, times(1)).save(any(Event.class));
+    }
+
+    @Test
+    void updateEventForOrganizer_ShouldAddNewTicketType_WhenIdIsNull() {
+        UUID existingTicketTypeId = UUID.randomUUID();
+        TicketType existingTicketType = TicketType.builder()
+                .id(existingTicketTypeId)
+                .name("Existing")
+                .price(50.0)
+                .build();
+        event.setTicketTypes(new ArrayList<>(List.of(existingTicketType)));
+
+        TicketTypeUpdatingReqDto existingDto = new TicketTypeUpdatingReqDto();
+        existingDto.setId(existingTicketTypeId);
+        existingDto.setName("Existing Updated");
+        existingDto.setPrice(60.0);
+
+        TicketTypeUpdatingReqDto newDto = new TicketTypeUpdatingReqDto();
+        newDto.setId(null);
+        newDto.setName("New Ticket Type");
+        newDto.setPrice(100.0);
+        newDto.setTotalAvailable(50);
+        newDto.setDescription("New Description");
+
+        EventUpdatingReqDto updateDto = new EventUpdatingReqDto();
+        updateDto.setId(eventId);
+        updateDto.setName("Event");
+        updateDto.setTicketTypes(List.of(existingDto, newDto));
+
+        when(eventRepo.findByIdAndOrganizerId(eventId, organizerId)).thenReturn(Optional.of(event));
+        when(eventRepo.save(any(Event.class))).thenAnswer(i -> i.getArgument(0));
+
+        Event result = eventService.updateEventForOrganizer(organizerId, updateDto, eventId);
+
+        assertEquals(2, result.getTicketTypes().size());
+    }
+
+    @Test
+    void updateEventForOrganizer_ShouldThrowException_WhenTicketTypeNotFound() {
+        UUID existingTicketTypeId = UUID.randomUUID();
+        UUID nonExistentTicketTypeId = UUID.randomUUID();
+
+        TicketType existingTicketType = TicketType.builder()
+                .id(existingTicketTypeId)
+                .name("Existing")
+                .price(50.0)
+                .build();
+        event.setTicketTypes(new ArrayList<>(List.of(existingTicketType)));
+
+        TicketTypeUpdatingReqDto nonExistentDto = new TicketTypeUpdatingReqDto();
+        nonExistentDto.setId(nonExistentTicketTypeId);
+        nonExistentDto.setName("Non Existent");
+        nonExistentDto.setPrice(100.0);
+
+        EventUpdatingReqDto updateDto = new EventUpdatingReqDto();
+        updateDto.setId(eventId);
+        updateDto.setName("Event");
+        updateDto.setTicketTypes(List.of(nonExistentDto));
+
+        when(eventRepo.findByIdAndOrganizerId(eventId, organizerId)).thenReturn(Optional.of(event));
+
+        assertThrows(TicketTypeNotFoundException.class,
+                () -> eventService.updateEventForOrganizer(organizerId, updateDto, eventId));
+    }
+
+    @Test
+    void updateEventForOrganizer_ShouldRemoveOrphanedTicketTypes() {
+        UUID ticketTypeId1 = UUID.randomUUID();
+        UUID ticketTypeId2 = UUID.randomUUID();
+
+        TicketType ticketType1 = TicketType.builder().id(ticketTypeId1).name("Type1").price(50.0).build();
+        TicketType ticketType2 = TicketType.builder().id(ticketTypeId2).name("Type2").price(75.0).build();
+        event.setTicketTypes(new ArrayList<>(List.of(ticketType1, ticketType2)));
+
+        TicketTypeUpdatingReqDto keepDto = new TicketTypeUpdatingReqDto();
+        keepDto.setId(ticketTypeId1);
+        keepDto.setName("Type1 Updated");
+        keepDto.setPrice(55.0);
+
+        EventUpdatingReqDto updateDto = new EventUpdatingReqDto();
+        updateDto.setId(eventId);
+        updateDto.setName("Event");
+        updateDto.setTicketTypes(List.of(keepDto));
+
+        when(eventRepo.findByIdAndOrganizerId(eventId, organizerId)).thenReturn(Optional.of(event));
+        when(eventRepo.save(any(Event.class))).thenAnswer(i -> i.getArgument(0));
+
+        Event result = eventService.updateEventForOrganizer(organizerId, updateDto, eventId);
+
+        assertEquals(1, result.getTicketTypes().size());
+        assertEquals("Type1 Updated", result.getTicketTypes().get(0).getName());
+    }
+
+    @Test
+    void searchPublishedEvents_ShouldReturnAllPublished_WhenQueryIsWhitespace() {
+        Page<Event> expectedPage = new PageImpl<>(List.of(event));
+        when(eventRepo.findByStatus(EventStatusEnum.PUBLISHED, pageable)).thenReturn(expectedPage);
+
+        Page<Event> result = eventService.searchPublishedEvents("   ", pageable);
+
+        assertNotNull(result);
+        verify(eventRepo, times(1)).findByStatus(EventStatusEnum.PUBLISHED, pageable);
     }
 }
 
