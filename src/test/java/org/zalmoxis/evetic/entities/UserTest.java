@@ -96,5 +96,98 @@ class UserTest {
 
         assertEquals(1, user.getAttendingEvents().size());
     }
+
+    @Test
+    void equals_ShouldReturnTrue_WhenSameObject() {
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .username("test")
+                .email("test@test.com")
+                .build();
+
+        assertEquals(user, user);
+    }
+
+    @Test
+    void equals_ShouldReturnTrue_WhenEqualObjects() {
+        UUID id = UUID.randomUUID();
+
+        User user1 = User.builder()
+                .id(id)
+                .username("testuser")
+                .email("test@test.com")
+                .build();
+
+        User user2 = User.builder()
+                .id(id)
+                .username("testuser")
+                .email("test@test.com")
+                .build();
+
+        assertEquals(user1, user2);
+        assertEquals(user1.hashCode(), user2.hashCode());
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentId() {
+        User user1 = User.builder().id(UUID.randomUUID()).username("test").email("test@test.com").build();
+        User user2 = User.builder().id(UUID.randomUUID()).username("test").email("test@test.com").build();
+
+        assertFalse(user1.equals(user2));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenNull() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+
+        assertFalse(user.equals(null));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentClass() {
+        User user = User.builder().id(UUID.randomUUID()).build();
+
+        assertFalse(user.equals("string"));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentUsername() {
+        UUID id = UUID.randomUUID();
+        User user1 = User.builder().id(id).username("user1").email("test@test.com").build();
+        User user2 = User.builder().id(id).username("user2").email("test@test.com").build();
+
+        assertFalse(user1.equals(user2));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentEmail() {
+        UUID id = UUID.randomUUID();
+        User user1 = User.builder().id(id).username("test").email("email1@test.com").build();
+        User user2 = User.builder().id(id).username("test").email("email2@test.com").build();
+
+        assertFalse(user1.equals(user2));
+    }
+
+    @Test
+    void hashCode_ShouldBeConsistent() {
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .username("test")
+                .email("test@test.com")
+                .build();
+
+        int hashCode1 = user.hashCode();
+        int hashCode2 = user.hashCode();
+
+        assertEquals(hashCode1, hashCode2);
+    }
+
+    @Test
+    void hashCode_ShouldBeDifferent_ForDifferentObjects() {
+        User user1 = User.builder().id(UUID.randomUUID()).username("user1").email("email1@test.com").build();
+        User user2 = User.builder().id(UUID.randomUUID()).username("user2").email("email2@test.com").build();
+
+        assertFalse(user1.hashCode() == user2.hashCode());
+    }
 }
 

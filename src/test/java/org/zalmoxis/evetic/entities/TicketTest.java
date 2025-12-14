@@ -2,6 +2,7 @@ package org.zalmoxis.evetic.entities;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -100,5 +101,89 @@ class TicketTest {
         assertNotNull(TicketStatusEnum.valueOf("PURCHASED"));
         assertNotNull(TicketStatusEnum.valueOf("CANCELLED"));
     }
-}
 
+    @Test
+    void equals_ShouldReturnTrue_WhenSameObject() {
+        Ticket ticket = Ticket.builder()
+                .id(UUID.randomUUID())
+                .status(TicketStatusEnum.PURCHASED)
+                .build();
+
+        assertEquals(ticket, ticket);
+    }
+
+    @Test
+    void equals_ShouldReturnTrue_WhenEqualObjects() {
+        UUID id = UUID.randomUUID();
+        LocalDateTime now = LocalDateTime.now();
+
+        Ticket ticket1 = Ticket.builder()
+                .id(id)
+                .status(TicketStatusEnum.PURCHASED)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        Ticket ticket2 = Ticket.builder()
+                .id(id)
+                .status(TicketStatusEnum.PURCHASED)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        assertEquals(ticket1, ticket2);
+        assertEquals(ticket1.hashCode(), ticket2.hashCode());
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentId() {
+        Ticket ticket1 = Ticket.builder().id(UUID.randomUUID()).status(TicketStatusEnum.PURCHASED).build();
+        Ticket ticket2 = Ticket.builder().id(UUID.randomUUID()).status(TicketStatusEnum.PURCHASED).build();
+
+        assertFalse(ticket1.equals(ticket2));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenNull() {
+        Ticket ticket = Ticket.builder().id(UUID.randomUUID()).build();
+
+        assertFalse(ticket.equals(null));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentClass() {
+        Ticket ticket = Ticket.builder().id(UUID.randomUUID()).build();
+
+        assertFalse(ticket.equals("string"));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentStatus() {
+        UUID id = UUID.randomUUID();
+        Ticket ticket1 = Ticket.builder().id(id).status(TicketStatusEnum.PURCHASED).build();
+        Ticket ticket2 = Ticket.builder().id(id).status(TicketStatusEnum.CANCELLED).build();
+
+        assertFalse(ticket1.equals(ticket2));
+    }
+
+    @Test
+    void hashCode_ShouldBeConsistent() {
+        Ticket ticket = Ticket.builder()
+                .id(UUID.randomUUID())
+                .status(TicketStatusEnum.PURCHASED)
+                .build();
+
+        int hashCode1 = ticket.hashCode();
+        int hashCode2 = ticket.hashCode();
+
+        assertEquals(hashCode1, hashCode2);
+    }
+
+    @Test
+    void hashCode_ShouldBeDifferent_ForDifferentObjects() {
+        Ticket ticket1 = Ticket.builder().id(UUID.randomUUID()).status(TicketStatusEnum.PURCHASED).build();
+        Ticket ticket2 = Ticket.builder().id(UUID.randomUUID()).status(TicketStatusEnum.CANCELLED).build();
+
+        assertFalse(ticket1.hashCode() == ticket2.hashCode());
+    }
+}

@@ -2,6 +2,7 @@ package org.zalmoxis.evetic.entities;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -97,6 +98,107 @@ class TicketTypeTest {
                 .build();
 
         assertNull(ticketType.getTotalAvailable());
+    }
+
+    @Test
+    void equals_ShouldReturnTrue_WhenSameObject() {
+        TicketType ticketType = TicketType.builder()
+                .id(UUID.randomUUID())
+                .name("VIP")
+                .build();
+
+        assertEquals(ticketType, ticketType);
+    }
+
+    @Test
+    void equals_ShouldReturnTrue_WhenEqualObjects() {
+        UUID id = UUID.randomUUID();
+        LocalDateTime now = LocalDateTime.now();
+
+        TicketType type1 = TicketType.builder()
+                .id(id)
+                .name("VIP")
+                .description("VIP Access")
+                .price(100.0)
+                .totalAvailable(50)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        TicketType type2 = TicketType.builder()
+                .id(id)
+                .name("VIP")
+                .description("VIP Access")
+                .price(100.0)
+                .totalAvailable(50)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        assertEquals(type1, type2);
+        assertEquals(type1.hashCode(), type2.hashCode());
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentId() {
+        TicketType type1 = TicketType.builder().id(UUID.randomUUID()).name("VIP").build();
+        TicketType type2 = TicketType.builder().id(UUID.randomUUID()).name("VIP").build();
+
+        assertFalse(type1.equals(type2));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenNull() {
+        TicketType ticketType = TicketType.builder().id(UUID.randomUUID()).build();
+
+        assertFalse(ticketType.equals(null));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentClass() {
+        TicketType ticketType = TicketType.builder().id(UUID.randomUUID()).build();
+
+        assertFalse(ticketType.equals("string"));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentName() {
+        UUID id = UUID.randomUUID();
+        TicketType type1 = TicketType.builder().id(id).name("VIP").build();
+        TicketType type2 = TicketType.builder().id(id).name("General").build();
+
+        assertFalse(type1.equals(type2));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentPrice() {
+        UUID id = UUID.randomUUID();
+        TicketType type1 = TicketType.builder().id(id).name("VIP").price(100.0).build();
+        TicketType type2 = TicketType.builder().id(id).name("VIP").price(200.0).build();
+
+        assertFalse(type1.equals(type2));
+    }
+
+    @Test
+    void hashCode_ShouldBeConsistent() {
+        TicketType ticketType = TicketType.builder()
+                .id(UUID.randomUUID())
+                .name("VIP")
+                .price(100.0)
+                .build();
+
+        int hashCode1 = ticketType.hashCode();
+        int hashCode2 = ticketType.hashCode();
+
+        assertEquals(hashCode1, hashCode2);
+    }
+
+    @Test
+    void hashCode_ShouldBeDifferent_ForDifferentObjects() {
+        TicketType type1 = TicketType.builder().id(UUID.randomUUID()).name("VIP").build();
+        TicketType type2 = TicketType.builder().id(UUID.randomUUID()).name("General").build();
+
+        assertFalse(type1.hashCode() == type2.hashCode());
     }
 }
 

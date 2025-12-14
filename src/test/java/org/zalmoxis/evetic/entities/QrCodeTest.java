@@ -2,6 +2,7 @@ package org.zalmoxis.evetic.entities;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -79,6 +80,104 @@ class QrCodeTest {
                 .build();
 
         assertEquals(QrCodeStatusEnum.INACTIVE, qrCode.getStatus());
+    }
+
+    @Test
+    void equals_ShouldReturnTrue_WhenSameObject() {
+        QrCode qrCode = QrCode.builder()
+                .id(UUID.randomUUID())
+                .status(QrCodeStatusEnum.ACTIVE)
+                .code("test")
+                .build();
+
+        assertEquals(qrCode, qrCode);
+    }
+
+    @Test
+    void equals_ShouldReturnTrue_WhenEqualObjects() {
+        UUID id = UUID.randomUUID();
+        LocalDateTime now = LocalDateTime.now();
+
+        QrCode qr1 = QrCode.builder()
+                .id(id)
+                .status(QrCodeStatusEnum.ACTIVE)
+                .code("testcode")
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        QrCode qr2 = QrCode.builder()
+                .id(id)
+                .status(QrCodeStatusEnum.ACTIVE)
+                .code("testcode")
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        assertEquals(qr1, qr2);
+        assertEquals(qr1.hashCode(), qr2.hashCode());
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentId() {
+        QrCode qr1 = QrCode.builder().id(UUID.randomUUID()).status(QrCodeStatusEnum.ACTIVE).code("test").build();
+        QrCode qr2 = QrCode.builder().id(UUID.randomUUID()).status(QrCodeStatusEnum.ACTIVE).code("test").build();
+
+        assertFalse(qr1.equals(qr2));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenNull() {
+        QrCode qrCode = QrCode.builder().id(UUID.randomUUID()).build();
+
+        assertFalse(qrCode.equals(null));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentClass() {
+        QrCode qrCode = QrCode.builder().id(UUID.randomUUID()).build();
+
+        assertFalse(qrCode.equals("string"));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentStatus() {
+        UUID id = UUID.randomUUID();
+        QrCode qr1 = QrCode.builder().id(id).status(QrCodeStatusEnum.ACTIVE).code("test").build();
+        QrCode qr2 = QrCode.builder().id(id).status(QrCodeStatusEnum.INACTIVE).code("test").build();
+
+        assertFalse(qr1.equals(qr2));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentCode() {
+        UUID id = UUID.randomUUID();
+        QrCode qr1 = QrCode.builder().id(id).status(QrCodeStatusEnum.ACTIVE).code("code1").build();
+        QrCode qr2 = QrCode.builder().id(id).status(QrCodeStatusEnum.ACTIVE).code("code2").build();
+
+        assertFalse(qr1.equals(qr2));
+    }
+
+    @Test
+    void hashCode_ShouldBeConsistent() {
+        QrCode qrCode = QrCode.builder()
+                .id(UUID.randomUUID())
+                .status(QrCodeStatusEnum.ACTIVE)
+                .code("test")
+                .build();
+
+        int hashCode1 = qrCode.hashCode();
+        int hashCode2 = qrCode.hashCode();
+
+        assertEquals(hashCode1, hashCode2);
+    }
+
+    @Test
+    void hashCode_ShouldBeDifferent_ForDifferentObjects() {
+        QrCode qr1 = QrCode.builder().id(UUID.randomUUID()).status(QrCodeStatusEnum.ACTIVE).code("code1").build();
+        QrCode qr2 = QrCode.builder().id(UUID.randomUUID()).status(QrCodeStatusEnum.INACTIVE).code("code2").build();
+
+        assertFalse(qr1.hashCode() == qr2.hashCode());
     }
 }
 

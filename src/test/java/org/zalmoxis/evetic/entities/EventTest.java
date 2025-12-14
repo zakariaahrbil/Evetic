@@ -97,5 +97,114 @@ class EventTest {
         assertEquals(startSales, event.getStartSalesAt());
         assertEquals(endSales, event.getEndSalesAt());
     }
+
+    @Test
+    void equals_ShouldReturnTrue_WhenSameObject() {
+        Event event = Event.builder()
+                .id(UUID.randomUUID())
+                .name("Test")
+                .build();
+
+        assertEquals(event, event);
+    }
+
+    @Test
+    void equals_ShouldReturnTrue_WhenEqualObjects() {
+        UUID id = UUID.randomUUID();
+        LocalDateTime now = LocalDateTime.now();
+
+        Event event1 = Event.builder()
+                .id(id)
+                .name("Test Event")
+                .location("Location")
+                .description("Description")
+                .startTime(now)
+                .endTime(now.plusHours(2))
+                .startSalesAt(now.minusDays(1))
+                .endSalesAt(now.minusHours(1))
+                .status(EventStatusEnum.PUBLISHED)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        Event event2 = Event.builder()
+                .id(id)
+                .name("Test Event")
+                .location("Location")
+                .description("Description")
+                .startTime(now)
+                .endTime(now.plusHours(2))
+                .startSalesAt(now.minusDays(1))
+                .endSalesAt(now.minusHours(1))
+                .status(EventStatusEnum.PUBLISHED)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        assertEquals(event1, event2);
+        assertEquals(event1.hashCode(), event2.hashCode());
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentId() {
+        Event event1 = Event.builder().id(UUID.randomUUID()).name("Test").build();
+        Event event2 = Event.builder().id(UUID.randomUUID()).name("Test").build();
+
+        assertFalse(event1.equals(event2));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenNull() {
+        Event event = Event.builder().id(UUID.randomUUID()).build();
+
+        assertFalse(event.equals(null));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentClass() {
+        Event event = Event.builder().id(UUID.randomUUID()).build();
+
+        assertFalse(event.equals("string"));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentName() {
+        UUID id = UUID.randomUUID();
+        Event event1 = Event.builder().id(id).name("Name1").build();
+        Event event2 = Event.builder().id(id).name("Name2").build();
+
+        assertFalse(event1.equals(event2));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentStatus() {
+        UUID id = UUID.randomUUID();
+        Event event1 = Event.builder().id(id).status(EventStatusEnum.DRAFT).build();
+        Event event2 = Event.builder().id(id).status(EventStatusEnum.PUBLISHED).build();
+
+        assertFalse(event1.equals(event2));
+    }
+
+    @Test
+    void hashCode_ShouldBeConsistent() {
+        Event event = Event.builder()
+                .id(UUID.randomUUID())
+                .name("Test")
+                .status(EventStatusEnum.DRAFT)
+                .build();
+
+        int hashCode1 = event.hashCode();
+        int hashCode2 = event.hashCode();
+
+        assertEquals(hashCode1, hashCode2);
+    }
+
+    @Test
+    void hashCode_ShouldBeDifferent_ForDifferentObjects() {
+        Event event1 = Event.builder().id(UUID.randomUUID()).name("Test1").build();
+        Event event2 = Event.builder().id(UUID.randomUUID()).name("Test2").build();
+
+        assertFalse(event1.hashCode() == event2.hashCode());
+    }
 }
 

@@ -97,5 +97,102 @@ class TicketValidationTest {
 
         assertEquals(TicketValidationMethodEnum.MANUAL_ENTRY, validation.getMethod());
     }
+
+    @Test
+    void equals_ShouldReturnTrue_WhenSameObject() {
+        TicketValidation validation = TicketValidation.builder()
+                .id(UUID.randomUUID())
+                .status(TicketValidationStatusEnum.VALID)
+                .build();
+
+        assertEquals(validation, validation);
+    }
+
+    @Test
+    void equals_ShouldReturnTrue_WhenEqualObjects() {
+        UUID id = UUID.randomUUID();
+        LocalDateTime now = LocalDateTime.now();
+
+        TicketValidation validation1 = TicketValidation.builder()
+                .id(id)
+                .status(TicketValidationStatusEnum.VALID)
+                .validationDate(now)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        TicketValidation validation2 = TicketValidation.builder()
+                .id(id)
+                .status(TicketValidationStatusEnum.VALID)
+                .validationDate(now)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        assertEquals(validation1, validation2);
+        assertEquals(validation1.hashCode(), validation2.hashCode());
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentId() {
+        TicketValidation v1 = TicketValidation.builder().id(UUID.randomUUID()).status(TicketValidationStatusEnum.VALID).build();
+        TicketValidation v2 = TicketValidation.builder().id(UUID.randomUUID()).status(TicketValidationStatusEnum.VALID).build();
+
+        assertFalse(v1.equals(v2));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenNull() {
+        TicketValidation validation = TicketValidation.builder().id(UUID.randomUUID()).build();
+
+        assertFalse(validation.equals(null));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentClass() {
+        TicketValidation validation = TicketValidation.builder().id(UUID.randomUUID()).build();
+
+        assertFalse(validation.equals("string"));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentStatus() {
+        UUID id = UUID.randomUUID();
+        TicketValidation v1 = TicketValidation.builder().id(id).status(TicketValidationStatusEnum.VALID).build();
+        TicketValidation v2 = TicketValidation.builder().id(id).status(TicketValidationStatusEnum.INVALID).build();
+
+        assertFalse(v1.equals(v2));
+    }
+
+    @Test
+    void equals_ShouldReturnFalse_WhenDifferentValidationDate() {
+        UUID id = UUID.randomUUID();
+        LocalDateTime now = LocalDateTime.now();
+        TicketValidation v1 = TicketValidation.builder().id(id).validationDate(now).build();
+        TicketValidation v2 = TicketValidation.builder().id(id).validationDate(now.plusHours(1)).build();
+
+        assertFalse(v1.equals(v2));
+    }
+
+    @Test
+    void hashCode_ShouldBeConsistent() {
+        TicketValidation validation = TicketValidation.builder()
+                .id(UUID.randomUUID())
+                .status(TicketValidationStatusEnum.VALID)
+                .build();
+
+        int hashCode1 = validation.hashCode();
+        int hashCode2 = validation.hashCode();
+
+        assertEquals(hashCode1, hashCode2);
+    }
+
+    @Test
+    void hashCode_ShouldBeDifferent_ForDifferentObjects() {
+        TicketValidation v1 = TicketValidation.builder().id(UUID.randomUUID()).status(TicketValidationStatusEnum.VALID).build();
+        TicketValidation v2 = TicketValidation.builder().id(UUID.randomUUID()).status(TicketValidationStatusEnum.INVALID).build();
+
+        assertFalse(v1.hashCode() == v2.hashCode());
+    }
 }
 

@@ -1,5 +1,8 @@
 package org.zalmoxis.evetic.services;
 
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,18 +13,18 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.zalmoxis.evetic.entities.QrCode;
 import org.zalmoxis.evetic.entities.QrCodeStatusEnum;
 import org.zalmoxis.evetic.entities.Ticket;
+import org.zalmoxis.evetic.entities.TicketStatusEnum;
 import org.zalmoxis.evetic.exceptions.QrCodeGenerationException;
 import org.zalmoxis.evetic.exceptions.QrCodeNotFoundException;
 import org.zalmoxis.evetic.repositories.QrCodeRepo;
 import org.zalmoxis.evetic.services.implementations.QrCodeServiceImpl;
-
-import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,9 +54,9 @@ class QrCodeServiceImplTest {
 
         ticket = Ticket.builder()
                 .id(ticketId)
+                .status(TicketStatusEnum.PURCHASED)
                 .build();
 
-        // Valid base64 encoded PNG data (a simple small image)
         String validBase64 = Base64.getEncoder().encodeToString(new byte[]{0, 1, 2, 3});
 
         qrCode = QrCode.builder()
@@ -65,6 +68,30 @@ class QrCodeServiceImplTest {
     }
 
     @Test
+    void generateQrCode_ShouldCreateAndSaveQrCode() throws WriterException {
+        BitMatrix bitMatrix = new BitMatrix(200, 200);
+        when(qrCodeWriter.encode(anyString(), any(), eq(200), eq(200))).thenReturn(bitMatrix);
+        when(qrCodeRepo.saveAndFlush(any(QrCode.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        QrCode result = qrCodeService.generateQrCode(ticket);
+
+        assertNotNull(result);
+        assertEquals(QrCodeStatusEnum.ACTIVE, result.getStatus());
+        assertEquals(ticket, result.getTicket());
+        assertNotNull(result.getCode());
+        verify(qrCodeRepo, times(1)).saveAndFlush(any(QrCode.class));
+    }
+
+    @Test
+    void generateQrCode_ShouldThrowException_WhenWriterExceptionOccurs() throws WriterException {
+        when(qrCodeWriter.encode(anyString(), any(), eq(200), eq(200)))
+                .thenThrow(new WriterException("Writer error"));
+
+        assertThrows(QrCodeGenerationException.class, () -> qrCodeService.generateQrCode(ticket));
+        verify(qrCodeRepo, never()).saveAndFlush(any(QrCode.class));
+    }
+
+    @Test
     void getQrCodeImageForOwner_ShouldReturnImageBytes_WhenExists() {
         when(qrCodeRepo.findByTicketIdAndTicketOwnerId(ticketId, ownerId))
                 .thenReturn(Optional.of(qrCode));
@@ -72,6 +99,7 @@ class QrCodeServiceImplTest {
         byte[] result = qrCodeService.getQrCodeImageForOwner(ticketId, ownerId);
 
         assertNotNull(result);
+        assertArrayEquals(new byte[]{0, 1, 2, 3}, result);
         verify(qrCodeRepo, times(1)).findByTicketIdAndTicketOwnerId(ticketId, ownerId);
     }
 
@@ -80,8 +108,10 @@ class QrCodeServiceImplTest {
         when(qrCodeRepo.findByTicketIdAndTicketOwnerId(ticketId, ownerId))
                 .thenReturn(Optional.empty());
 
-        assertThrows(QrCodeNotFoundException.class,
+        QrCodeNotFoundException exception = assertThrows(QrCodeNotFoundException.class,
             () -> qrCodeService.getQrCodeImageForOwner(ticketId, ownerId));
+
+        assertTrue(exception.getMessage().contains(ticketId.toString()));
     }
 
     @Test
@@ -90,8 +120,37 @@ class QrCodeServiceImplTest {
         when(qrCodeRepo.findByTicketIdAndTicketOwnerId(ticketId, ownerId))
                 .thenReturn(Optional.of(qrCode));
 
-        assertThrows(QrCodeGenerationException.class,
+        QrCodeGenerationException exception = assertThrows(QrCodeGenerationException.class,
             () -> qrCodeService.getQrCodeImageForOwner(ticketId, ownerId));
+
+        assertTrue(exception.getMessage().contains(ticketId.toString()));
+    }
+
+    @Test
+    void generateQrCode_ShouldSetCorrectQrCodeProperties() throws WriterException {
+        BitMatrix bitMatrix = new BitMatrix(200, 200);
+        when(qrCodeWriter.encode(anyString(), any(), eq(200), eq(200))).thenReturn(bitMatrix);
+        when(qrCodeRepo.saveAndFlush(any(QrCode.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        QrCode result = qrCodeService.generateQrCode(ticket);
+
+        assertNotNull(result.getId());
+        assertNotNull(result.getCode());
+        assertEquals(QrCodeStatusEnum.ACTIVE, result.getStatus());
+        assertEquals(ticket, result.getTicket());
+    }
+
+    @Test
+    void getQrCodeImageForOwner_ShouldDecodeBase64Correctly() {
+        byte[] originalBytes = "test image data".getBytes();
+        String base64Encoded = Base64.getEncoder().encodeToString(originalBytes);
+        qrCode.setCode(base64Encoded);
+
+        when(qrCodeRepo.findByTicketIdAndTicketOwnerId(ticketId, ownerId))
+                .thenReturn(Optional.of(qrCode));
+
+        byte[] result = qrCodeService.getQrCodeImageForOwner(ticketId, ownerId);
+
+        assertArrayEquals(originalBytes, result);
     }
 }
-
